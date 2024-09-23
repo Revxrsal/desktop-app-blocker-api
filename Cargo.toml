@@ -1,0 +1,30 @@
+[package]
+name = "desktop-app-blocker-api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = []
+bincode = ["dep:bincode"]
+serde = ["dep:serde"]
+specta = ["dep:specta"]
+
+[dependencies]
+bincode = { version = "2.0.0-rc.3", features = ["derive"], optional = true }
+serde = { version = "1.0.210", features = ["derive"], optional = true }
+specta = { version = "2.0.0-rc.20", features = ["derive"], optional = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.58.0", features = [
+    "Win32_System_ProcessStatus",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_Threading"
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cacao = { git = "https://github.com/agg23/cacao.git", branch = "nsworkspace" }
+regex = "1.10.6"
+regex-macro = "0.2.0"
