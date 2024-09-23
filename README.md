@@ -9,6 +9,9 @@
 **Desktop App Blocker API** is a utility Rust crate for performing cross-platform "app blocking". Useful for
 productivity applications or productivity software.
 
+This is a project I have built for my personal use. Therefore, I am being slightly selfish and putting more emphasis on
+the features that *I* need, even if that meant ignoring the greater good. 🍕
+
 ## Features
 
 - Support for Windows and macOS
