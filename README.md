@@ -1,5 +1,5 @@
 # Desktop App Blocker API
-DABA is a utility Rust crate for performing cross-platform "app blocking". Useful for productivity applications or productivity software.
+**Desktop App Blocker API** is a utility Rust crate for performing cross-platform "app blocking". Useful for productivity applications or productivity software.
 
 ## Features
 - Support for Windows and macOS
