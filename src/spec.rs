@@ -1,3 +1,4 @@
+use windows::Win32::Foundation::HWND;
 use crate::blocker::app::AppBlockAction;
 
 /// The `BlockerSpec` trait defines the interface for a blocking policy,
@@ -85,6 +86,16 @@ pub trait BlockerSpec {
     /// `true` if installers should be blocked, `false` otherwise.
     #[cfg(target_os = "windows")]
     fn should_block_installers(&self) -> bool;
+
+    /// Indicates whether the given window should be blocked
+    /// or not.
+    ///
+    /// This is applicable only to Windows platforms.
+    ///
+    /// # Returns
+    /// `true` if window should be blocked, `false` otherwise.
+    #[cfg(all(target_os = "windows", feature = "hwnd"))]
+    fn should_block_hwnd(&self, window: HWND) -> bool;
 
     /// Determines whether an application with the specified bundle ID should be blocked.
     ///

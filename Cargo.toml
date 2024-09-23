@@ -7,6 +7,7 @@ edition = "2021"
 
 [features]
 default = []
+hwnd = []
 bincode = ["dep:bincode"]
 serde = ["dep:serde"]
 specta = ["dep:specta"]
@@ -25,6 +26,6 @@ windows = { version = "0.58.0", features = [
 ] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-cacao = { git = "https://github.com/agg23/cacao.git", branch = "nsworkspace" }
+cacao = { git = "https://github.com/agg23/cacao.git", branch = "nsworkspace", version = "0.4.0-beta1" }
 regex = "1.10.6"
 regex-macro = "0.2.0"

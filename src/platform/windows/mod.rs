@@ -57,6 +57,11 @@ impl WindowsBlocker {
                 execute_action(&app_block_action, current_window);
                 return;
             }
+            #[cfg(all(target_os = "windows", feature = "hwnd"))]
+            if spec.should_block_hwnd(current_window) {
+                execute_action(&app_block_action, current_window);
+                return;
+            }
         }
     }
 }
