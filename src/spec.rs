@@ -106,5 +106,5 @@ pub trait BlockerSpec {
     /// # Returns
     /// `true` if the application should be blocked, `false` otherwise.
     #[cfg(target_os = "macos")]
-    fn should_block_bundle_id(&self, bundle_id: &str);
+    fn should_block_bundle_id(&self, bundle_id: &str) -> bool;
 }
