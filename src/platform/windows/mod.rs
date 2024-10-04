@@ -21,7 +21,7 @@ pub struct WindowsBlocker;
 impl WindowsBlocker {
     pub fn perform_block(spec: &impl BlockerSpec) {
         let app_block_action = spec.app_block_action();
-        let escape_block_action = spec.app_block_action();
+        let escape_block_action = spec.escape_block_action();
         let current_window = get_active_window();
         let process_name = get_process_name(current_window);
         let title = get_window_title(current_window);

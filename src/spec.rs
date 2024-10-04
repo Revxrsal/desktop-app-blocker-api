@@ -12,7 +12,7 @@ pub trait BlockerSpec {
     ///
     /// # Returns
     /// `AppBlockAction` - the specified action to take when blocking an app.
-    fn app_block_action(&self) -> AppBlockAction;
+    fn app_block_action(&self) -> &AppBlockAction;
 
     /// Retrieves the action to be performed when the user attempts to bypass
     /// or escape the block.
@@ -22,7 +22,7 @@ pub trait BlockerSpec {
     ///
     /// # Returns
     /// `AppBlockAction` - the specified action to take when an escape attempt occurs.
-    fn escape_block_action(&self) -> AppBlockAction;
+    fn escape_block_action(&self) -> &AppBlockAction;
 
     /// Indicates whether the Task Manager (or Activity Monitor) should
     /// be blocked.
