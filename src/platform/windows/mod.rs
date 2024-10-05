@@ -6,6 +6,7 @@ use crate::blocker::app::AppBlockAction;
 use crate::spec::BlockerSpec;
 use crate::platform::windows::utils::{close_window, terminate};
 use windows::Win32::Foundation::HWND;
+use crate::platform::sys::utils::get_process_file_path;
 
 pub mod utils;
 
@@ -19,12 +20,14 @@ const INSTALLER: &str = "msiexec.exe";
 pub struct WindowsBlocker;
 
 impl WindowsBlocker {
+    
     pub fn perform_block(spec: &impl BlockerSpec) {
         let app_block_action = spec.app_block_action();
         let escape_block_action = spec.escape_block_action();
         let current_window = get_active_window();
         let process_name = get_process_name(current_window);
         let title = get_window_title(current_window);
+        let directory = get_process_file_path(current_window).ok();
         if let Some(process_name) = process_name {
             if spec.should_block_sign_out_buttons() && is_illegal_context_menu(current_window, &process_name, &title) {
                 close_window(current_window);
@@ -49,16 +52,7 @@ impl WindowsBlocker {
                 execute_action(&escape_block_action, current_window);
                 return;
             }
-            if spec.should_block_window(&title) {
-                execute_action(&app_block_action, current_window);
-                return;
-            }
-            if spec.should_block_process(&process_name) {
-                execute_action(&app_block_action, current_window);
-                return;
-            }
-            #[cfg(all(target_os = "windows", feature = "hwnd"))]
-            if spec.should_block_hwnd(current_window) {
+            if spec.should_block_window(&process_name, &title, directory.as_ref()) {
                 execute_action(&app_block_action, current_window);
                 return;
             }

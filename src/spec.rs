@@ -41,8 +41,8 @@ pub trait BlockerSpec {
     ///
     /// # Returns
     /// `true` if the window should be blocked, `false` otherwise.
-    #[cfg(not(target_os = "macos"))]
-    fn should_block_window(&self, title: &str) -> bool;
+    #[cfg(target_os = "windows")]
+    fn should_block_window(&self, process_name: &str, window_title: &str, full_path: Option<&String>) -> bool;
 
     /// Indicates whether terminal applications should be blocked.
     ///
@@ -55,18 +55,6 @@ pub trait BlockerSpec {
     /// # Returns
     /// `true` if system settings should be blocked, `false` otherwise.
     fn should_block_system_settings(&self) -> bool;
-
-    /// Determines whether a process with the specified name should be blocked.
-    ///
-    /// This is applicable only to Windows platforms.
-    ///
-    /// # Parameters
-    /// - `process_name`: The name of the process to check for blocking.
-    ///
-    /// # Returns
-    /// `true` if the process should be blocked, `false` otherwise.
-    #[cfg(target_os = "windows")]
-    fn should_block_process(&self, process_name: &str) -> bool;
 
     /// Indicates whether sign-out buttons should be blocked.
     ///
@@ -85,16 +73,6 @@ pub trait BlockerSpec {
     /// `true` if installers should be blocked, `false` otherwise.
     #[cfg(target_os = "windows")]
     fn should_block_installers(&self) -> bool;
-
-    /// Indicates whether the given window should be blocked
-    /// or not.
-    ///
-    /// This is applicable only to Windows platforms.
-    ///
-    /// # Returns
-    /// `true` if window should be blocked, `false` otherwise.
-    #[cfg(all(target_os = "windows", feature = "hwnd"))]
-    fn should_block_hwnd(&self, window: windows::Win32::Foundation::HWND) -> bool;
 
     /// Determines whether an application with the specified bundle ID should be blocked.
     ///

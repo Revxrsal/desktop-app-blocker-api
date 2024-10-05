@@ -1,15 +1,12 @@
 use std::ffi::OsString;
 use std::os::windows::ffi::OsStringExt;
-use windows::Win32::Foundation::{
-    CloseHandle, BOOL, FALSE, HWND, LPARAM, MAX_PATH, TRUE, WPARAM,
-};
+use std::ptr::null_mut;
+use windows::Win32::Foundation::{CloseHandle, BOOL, FALSE, HMODULE, HWND, LPARAM, MAX_PATH, TRUE, WPARAM};
 use windows::Win32::System::Diagnostics::ToolHelp::{
     CreateToolhelp32Snapshot, Process32FirstW, Process32NextW, PROCESSENTRY32W, TH32CS_SNAPPROCESS,
 };
-use windows::Win32::System::Threading::{
-    OpenProcess, TerminateProcess,
-    PROCESS_TERMINATE,
-};
+use windows::Win32::System::ProcessStatus::GetModuleFileNameExW;
+use windows::Win32::System::Threading::{OpenProcess, TerminateProcess, PROCESS_QUERY_INFORMATION, PROCESS_QUERY_LIMITED_INFORMATION, PROCESS_TERMINATE};
 use windows::Win32::UI::WindowsAndMessaging::{CloseWindow, EnumChildWindows, GetForegroundWindow, GetWindowTextW, GetWindowThreadProcessId, IsWindowVisible, SendMessageW, SC_MINIMIZE, WM_SYSCOMMAND};
 
 const STORE_WINDOWS_APP: &'static str = "applicationframehost.exe";
@@ -136,3 +133,24 @@ pub fn get_process_name(window: HWND) -> Option<String> {
         None
     }
 }
+pub fn get_process_file_path(window: HWND) -> Result<String, String> {
+    let pid = get_process_id(window);
+    unsafe {
+        let mut process = OpenProcess(PROCESS_QUERY_INFORMATION, false, pid)
+            .map_err(|e| format!("Failed to open process: {}", e));
+        if let Err(_) = process {
+            // Retry with PROCESS_QUERY_LIMITED_INFORMATION access
+            process = Ok(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid)
+                .map_err(|e| format!("Failed to open process: {}", e))?);
+        }
+        let process = process?;
+        let mut image_path: [u16; MAX_PATH as usize] = [0; MAX_PATH as usize];
+        GetModuleFileNameExW(process, HMODULE(null_mut()), &mut image_path);
+        CloseHandle(process).map_err(|e| format!("Failed to close process handle: {}", e))?;
+        let process_image_path = OsString::from_wide(&image_path)
+            .into_string()
+            .unwrap_or_default();
+        Ok(process_image_path)
+    }
+}
+

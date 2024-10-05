@@ -9,6 +9,7 @@ use cacao::appkit::workspace::Workspace;
 pub struct MacosBlocker;
 
 impl MacosBlocker {
+    
     pub fn perform_block(spec: &impl BlockerSpec) {
         let workspace = Workspace::shared();
         let app_block_action = spec.app_block_action();
